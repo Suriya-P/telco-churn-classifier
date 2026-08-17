@@ -276,7 +276,7 @@ st.markdown(
     """
     <div class="footer-note">
         Built for the BITS Pilani M.Tech (AIML/DSE) Machine Learning Assignment 2 ·
-        6 classification models, evaluated on Accuracy, AUC, Precision, Recall, F1, and MCC.
+        5 classification models, evaluated on Accuracy, AUC, Precision, Recall, F1, and MCC.
     </div>
     """,
     unsafe_allow_html=True,

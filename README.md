@@ -1,6 +1,6 @@
 # 📡 Telco Customer Churn — Classification Project
 
-A machine learning project that trains and compares 6 classification models to predict telecom customer churn, with an interactive Streamlit app for exploring results.
+A machine learning project that trains and compares 5 classification models to predict telecom customer churn, with an interactive Streamlit app for exploring results.
 
 > Built for BITS Pilani WILP M.Tech (AIML/DSE) — Machine Learning, Assignment 2
 
@@ -38,7 +38,7 @@ Customer churn — when a subscriber stops using a company's service — is one 
 
 ## c. GitHub Repository
 
-`<PASTE YOUR GITHUB REPO LINK HERE>`
+[https://github.com/Suriya-P/telco-churn-classifier](https://github.com/Suriya-P/telco-churn-classifier)
 
 **Repository structure:**
 ```
@@ -96,7 +96,7 @@ All 5 models were trained on an **80/20 stratified train-test split** (`random_s
 
 ## Streamlit App
 
-**Live app link:** `<PASTE YOUR STREAMLIT CLOUD LINK HERE>`
+**Live app link:** [https://telco-churn-classifier-fnvgvxk7aamfqezb9mb3q8.streamlit.app/](https://telco-churn-classifier-fnvgvxk7aamfqezb9mb3q8.streamlit.app/)
 
 ### Features
 | Requirement | Implementation |
