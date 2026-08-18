@@ -1,1 +1,1 @@
-# Screenshot of BITS Virtual Lab execution goes here
+![Streamlit App Screenshot](/image.png)
