@@ -124,6 +124,45 @@ def load_feature_columns():
         return json.load(f)
 
 
+def encode_raw_telco(df, feature_cols):
+    """
+    Takes a raw-format Telco Churn CSV (original Kaggle columns like
+    gender, InternetService, Contract, Churn, etc.) and encodes it to
+    match the exact 30-column schema the models were trained on.
+    Returns None if the input doesn't look like raw Telco data.
+    """
+    df = df.copy()
+
+    if "customerID" in df.columns:
+        df = df.drop(columns=["customerID"])
+
+    if "Churn" in df.columns:
+        df["Target"] = (df["Churn"].astype(str).str.strip() == "Yes").astype(int)
+        df = df.drop(columns=["Churn"])
+    elif "Target" not in df.columns:
+        return None  # no usable label column at all
+
+    if "TotalCharges" in df.columns:
+        df["TotalCharges"] = df["TotalCharges"].replace(" ", "0")
+        df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce").fillna(0)
+
+    numeric_cols = [c for c in ["tenure", "MonthlyCharges", "TotalCharges", "SeniorCitizen"] if c in df.columns]
+    categorical_cols = [c for c in df.columns if c not in numeric_cols + ["Target"]]
+
+    df_encoded = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+    bool_cols = df_encoded.select_dtypes(include="bool").columns
+    df_encoded[bool_cols] = df_encoded[bool_cols].astype(int)
+
+    # Align to the exact training schema: add any missing dummy columns as 0,
+    # drop any extras, and order columns to match.
+    for col in feature_cols:
+        if col not in df_encoded.columns:
+            df_encoded[col] = 0
+    df_encoded = df_encoded[feature_cols + ["Target"]]
+
+    return df_encoded
+
+
 # ----------------------------------------------------------------------------
 # HEADER
 # ----------------------------------------------------------------------------
@@ -177,10 +216,23 @@ else:
     st.stop()
 
 missing_cols = [c for c in feature_cols if c not in data.columns]
+
 if missing_cols:
-    st.error(f"Uploaded file is missing required feature columns: {missing_cols}")
-    st.stop()
-if "Target" not in data.columns:
+    # The uploaded file doesn't already match the trained feature schema.
+    # Try treating it as a raw-format Telco CSV (original Kaggle columns)
+    # and encode it automatically.
+    encoded = encode_raw_telco(data, feature_cols)
+    if encoded is None:
+        st.error(
+            "Couldn't process this file. It must either be pre-encoded with "
+            f"these {len(feature_cols)} feature columns plus 'Target', or be "
+            "a raw-format Telco Churn CSV with a 'Churn' or 'Target' column "
+            "(e.g. gender, tenure, Contract, InternetService, ..., Churn)."
+        )
+        st.stop()
+    data = encoded
+    st.info("Detected a raw-format CSV — automatically encoded it to match the trained feature schema.")
+elif "Target" not in data.columns:
     st.error("Uploaded file must include a 'Target' column (0 = No Churn, 1 = Churn).")
     st.stop()
 
