@@ -108,7 +108,7 @@ All 5 models were trained on an **80/20 stratified train-test split** (`random_s
 | **Bonus: model comparison view** | Optional expandable table + bar chart comparing all 5 models side by side |
 
 ### Screenshot
-![alt text](image.png)
+![Streamlit App Screenshot](screenshots/image.png)
 
 ---
 
